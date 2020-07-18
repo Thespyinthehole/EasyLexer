@@ -104,8 +104,8 @@ enum Tokens
     token_open_scope = -2,
     token_close_scope = -3,
     token_if = -4,
-    token_greater = -5,
-    token_greater_than = -6,
+    token_greater_than = -5,
+    token_greater = -6,
     token_left_bracket = -7,
     token_right_bracket = -8,
     token_variable = -9
@@ -121,8 +121,10 @@ int main()
     a.add_new_token(Tokens::token_eof, std::string(1, EOF));
     a.add_new_token(Tokens::token_close_scope, "\\}");
     a.add_new_token(Tokens::token_variable, "[a-z]+");
+    a.add_new_token(Tokens::token_greater_than, ">=");
+    a.add_new_token(Tokens::token_greater, ">");
 
-    a.assign_string("if(hello){}}}");
+    a.assign_string("if(hello>=world){}");
     Token next_token;
     while ((next_token = a.next_token()).hasNext)
     {
