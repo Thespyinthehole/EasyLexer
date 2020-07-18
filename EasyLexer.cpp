@@ -7,14 +7,20 @@ class Token
 {
 public:
     int token;
-    std::string *value;
-    Token(int _token, std::string *_value);
+    std::string value;
+    bool hasNext;
+    Token();
+    Token(int _token);
 };
 
-Token::Token(int _token, std::string *_value)
+Token::Token(){
+    hasNext = false;
+}
+
+Token::Token(int _token)
 {
+    hasNext = true;
     token = _token;
-    value = _value;
 }
 
 class EasyLexer
@@ -27,7 +33,7 @@ private:
 public:
     void add_new_token(int token, std::string regex);
     void assign_string(std::string read_string);
-    Token *next_token();
+    Token next_token();
 };
 
 void EasyLexer::add_new_token(int token, std::string regex)
@@ -41,10 +47,13 @@ void EasyLexer::assign_string(std::string read_string)
     current_char_location = 0;
 }
 
-Token *EasyLexer::next_token()
+Token EasyLexer::next_token()
 {
     if (string_to_analysis.empty())
-        return nullptr;
+        return Token();
+
+    if (current_char_location > string_to_analysis.size())
+        return Token();
 
     std::map<int, std::regex>::iterator iter;
     for (iter = tokens.begin(); iter != tokens.end(); iter++)
@@ -52,7 +61,8 @@ Token *EasyLexer::next_token()
         int offset = 1;
         bool found = false;
         std::string current_analysis = string_to_analysis.substr(current_char_location, offset);
-        while (current_char_location + offset < string_to_analysis.size())
+
+        while (current_char_location + offset <= string_to_analysis.size())
         {
             if (found)
             {
@@ -72,16 +82,20 @@ Token *EasyLexer::next_token()
 
         if (found)
         {
+            if ((current_char_location + offset) == string_to_analysis.size())
+                current_analysis = string_to_analysis.substr(current_char_location, --offset);
+
             current_char_location += offset;
             std::string *value;
             value = new std::string;
             *value = current_analysis;
-            return &(Token(iter->first, value));
+            Token token = Token(iter->first);
+            token.value = current_analysis;
+            return token;
         }
     }
-    return nullptr;
+    return Token();
 }
-
 
 //Example
 enum Tokens
@@ -109,9 +123,9 @@ int main()
     a.add_new_token(Tokens::token_variable, "[a-z]+");
 
     a.assign_string("if(hello){}}}");
-    Token *next_token;
-    while ((next_token = a.next_token()) != nullptr)
+    Token next_token;
+    while ((next_token = a.next_token()).hasNext)
     {
-        printf("Token: %s, Type: %d\n", next_token->value->c_str(), next_token->token);
+        printf("Token: %s, Type: %d\n", next_token.value.c_str(), next_token.token);
     }
 }
