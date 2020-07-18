@@ -1,7 +1,4 @@
 #include <stdio.h>
-#include <map>
-#include <string>
-#include <regex>
 #include "EasyLexer.h"
 
 Token::Token()
