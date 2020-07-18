@@ -2,68 +2,62 @@
 #include <map>
 #include <string>
 #include <regex>
+#include "EasyLexer.h"
 
-class Token
+Token::Token()
 {
-public:
-    int token;
-    std::string value;
-    bool hasNext;
-    Token();
-    Token(int _token);
-};
-
-Token::Token(){
+    //This token is the end of the processing
     hasNext = false;
 }
 
 Token::Token(int _token)
 {
+    //This token still has stuff to process
     hasNext = true;
+    //Set the token type for this token
     token = _token;
 }
 
-class EasyLexer
-{
-private:
-    std::map<int, std::regex, std::greater<int>> tokens;
-    std::string string_to_analysis;
-    int current_char_location;
-
-public:
-    void add_new_token(int token, std::string regex);
-    void assign_string(std::string read_string);
-    Token next_token();
-};
-
 void EasyLexer::add_new_token(int token, std::string regex)
 {
+    //Add a new valid token to the map, turning the regex string into a regex object
     tokens.insert(std::pair<int, std::regex>(token, std::regex(regex)));
 }
 
 void EasyLexer::assign_string(std::string read_string)
 {
+    //Set the new string
     string_to_analysis = read_string;
+    //Reset the offset
     current_char_location = 0;
 }
 
 Token EasyLexer::next_token()
 {
+    //If there is a blank string do not process
     if (string_to_analysis.empty())
         return Token();
 
+    //If we have reached the end do not process
     if (current_char_location > string_to_analysis.size())
         return Token();
 
+    //Get the iterator for the map of valid tokens
     std::map<int, std::regex>::iterator iter;
+    //Loop over each valid token
     for (iter = tokens.begin(); iter != tokens.end(); iter++)
     {
+        //How many characters should we read
         int offset = 1;
+        //Has this token matched any characters yet
         bool found = false;
+        //The current search string
         std::string current_analysis = string_to_analysis.substr(current_char_location, offset);
 
+        //Loop over the rest of the characters
         while (current_char_location + offset <= string_to_analysis.size())
         {
+            //If we have a match already, keep searching until it doesnt match
             if (found)
             {
                 if (!std::regex_match(current_analysis, iter->second))
@@ -72,62 +66,26 @@ Token EasyLexer::next_token()
                     break;
                 }
             }
-            else
-            {
-                if (std::regex_match(current_analysis, iter->second))
-                    found = true;
-            }
+            //If we just found a match note it
+            else if (std::regex_match(current_analysis, iter->second))
+                found = true;
+
+            //Update the current search string
             current_analysis = string_to_analysis.substr(current_char_location, ++offset);
         }
 
+        //If a match has been found return a token object with the correct type and value.
         if (found)
         {
+            //If you reached the second to last character it kinda messes up, but this solves it
             if ((current_char_location + offset) == string_to_analysis.size())
                 current_analysis = string_to_analysis.substr(current_char_location, --offset);
 
             current_char_location += offset;
-            std::string *value;
-            value = new std::string;
-            *value = current_analysis;
             Token token = Token(iter->first);
             token.value = current_analysis;
             return token;
         }
     }
     return Token();
-}
-
-//Example
-enum Tokens
-{
-    token_eof = -1,
-    token_open_scope = -2,
-    token_close_scope = -3,
-    token_if = -4,
-    token_greater_than = -5,
-    token_greater = -6,
-    token_left_bracket = -7,
-    token_right_bracket = -8,
-    token_variable = -9
-};
-
-int main()
-{
-    EasyLexer a;
-    a.add_new_token(Tokens::token_open_scope, "\\{");
-    a.add_new_token(Tokens::token_if, "if");
-    a.add_new_token(Tokens::token_left_bracket, "\\(");
-    a.add_new_token(Tokens::token_right_bracket, "\\)");
-    a.add_new_token(Tokens::token_eof, std::string(1, EOF));
-    a.add_new_token(Tokens::token_close_scope, "\\}");
-    a.add_new_token(Tokens::token_variable, "[a-z]+");
-    a.add_new_token(Tokens::token_greater_than, ">=");
-    a.add_new_token(Tokens::token_greater, ">");
-
-    a.assign_string("if(hello>=world){}");
-    Token next_token;
-    while ((next_token = a.next_token()).hasNext)
-    {
-        printf("Token: %s, Type: %d\n", next_token.value.c_str(), next_token.token);
-    }
 }
