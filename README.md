@@ -38,15 +38,14 @@ By using the `add_token` method, we have signed up our 2 valid tokens to the lex
 
 Now that the tokens have been defined, we now need to give the lexer a string to extract tokens from. 
 
-`lexer.assign_string(" { {");`
+`lexer.parse(" { {");`
 
-Finally, now that everything has been set up, it is time to extract our tokens. This is done by calling `lexer.next_token()`. No matter if a token has been successfully extracted or not, a token object will always been returned. To test if the token is valid, the `has_next` property will be true if successful. Using this you can easily loop over the tokens as seen in the example below.
+This will extract the tokens from the string given and return a list of tokens. This can then be iterated over similar to the example below
 
 ```c
-Token next_token;
-
-while ((next_token = lexer.next_token()).hasNext)   
-  printf("\nToken: %s, Type: %d", next_token.value.c_str(), next_token.token);    
+std::list<Token>::iterator iter;
+for (iter = tokens.begin(); iter != tokens.end(); iter++)
+  printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
 ```
 
 ### Compiling the code
