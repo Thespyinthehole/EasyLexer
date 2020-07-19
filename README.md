@@ -46,8 +46,7 @@ Finally, now that everything has been set up, it is time to extract our tokens. 
 Token next_token;
 
 while ((next_token = lexer.next_token()).hasNext)   
-  printf("\nToken: %s, Type: %d", next_token.value.c_str(), next_token.token);
-    
+  printf("\nToken: %s, Type: %d", next_token.value.c_str(), next_token.token);    
 ```
 
 ### Compiling the code
