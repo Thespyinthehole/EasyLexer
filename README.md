@@ -43,6 +43,8 @@ Now that the tokens have been defined, we now need to give the lexer a string to
 Finally, now that everything has been set up, it is time to extract our tokens. This is done by calling `lexer.next_token()`. No matter if a token has been successfully extracted or not, a token object will always been returned. To test if the token is valid, the `has_next` property will be true if successful. Using this you can easily loop over the tokens as seen in the example below.
 
 ```
+Token next_token;
+
 while ((next_token = lexer.next_token()).hasNext)   
   printf("\nToken: %s, Type: %d", next_token.value.c_str(), next_token.token);
     
