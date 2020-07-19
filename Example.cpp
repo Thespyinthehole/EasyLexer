@@ -28,15 +28,10 @@ int main()
     a.add_new_token(Tokens::token_greater_than, ">=");
     a.add_new_token(Tokens::token_greater, ">");
 
-//Write the string we want to extract tokens from
-    a.assign_string("if(hello>=world){}");
+    //Write the string we want to extract tokens from
+    std::list<Token> tokens = a.parse("if(hello>=world){}");
 
-    
-    Token next_token;
-    
-    //While there is a valid token print out its value and type
-    while ((next_token = a.next_token()).hasNext)
-    {
-        printf("\nToken: %s, Type: %d", next_token.value.c_str(), next_token.token);
-    }
+    std::list<Token>::iterator iter;
+    for (iter = tokens.begin(); iter != tokens.end(); iter++)
+        printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
 }

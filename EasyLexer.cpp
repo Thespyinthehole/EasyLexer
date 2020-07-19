@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "EasyLexer.h"
 
 Token::Token()
@@ -21,12 +20,21 @@ void EasyLexer::add_new_token(int token, std::string regex)
     tokens.insert(std::pair<int, std::regex>(token, std::regex(regex)));
 }
 
-void EasyLexer::assign_string(std::string read_string)
+std::list<Token> EasyLexer::parse(std::string read_string)
 {
     //Set the new string
     string_to_analysis = read_string;
+
     //Reset the offset
     current_char_location = 0;
+
+    std::list<Token> tokens;
+
+    Token token;
+    while ((token = next_token()).hasNext)
+        tokens.push_back(token);
+
+    return tokens;
 }
 
 Token EasyLexer::next_token()
