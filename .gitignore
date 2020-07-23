@@ -1,7 +1,4 @@
 .vscode
 .gitattributes
-EasyLexer.exe
-EasyLexer.obj
 Example.exe
-Example.obj
 .gitignore

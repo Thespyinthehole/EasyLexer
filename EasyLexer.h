@@ -24,6 +24,9 @@ public:
 
     //Constructor in which the token is set. _token - the token type of this token
     Token(int _token);
+
+    //Constructor in which the token is set. _token - the token type of this token
+    Token(int _token, std::string value);
 };
 
 //Stores the valid tokens and extracts tokens from a given string
@@ -40,6 +43,7 @@ private:
     Token next_token();
 
 public:
+    int end_of_field_token = 0;
     //Add a new valid token to the set of valid tokens. token- the token type, regex - the regex that defines the token
     void add_new_token(int token, std::string regex);
     //Set up a new string to be processed. read_string - the string to be processed, return - the list of tokens generated from the string

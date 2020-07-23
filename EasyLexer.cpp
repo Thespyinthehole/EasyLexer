@@ -14,6 +14,16 @@ Token::Token(int _token)
     token = _token;
 }
 
+Token::Token(int _token, std::string value)
+{
+    //This token still has stuff to process
+    hasNext = true;
+    //Set the token type for this token
+    token = _token;
+    //Set the value
+    this->value = value;
+}
+
 void EasyLexer::add_new_token(int token, std::string regex)
 {
     //Add a new valid token to the map, turning the regex string into a regex object
@@ -34,6 +44,7 @@ std::list<Token> EasyLexer::parse(std::string read_string)
     while ((token = next_token()).hasNext)
         tokens.push_back(token);
 
+    tokens.push_back(Token(end_of_field_token));
     return tokens;
 }
 
@@ -87,8 +98,7 @@ Token EasyLexer::next_token()
                 current_analysis = string_to_analysis.substr(current_char_location, --offset);
 
             current_char_location += offset;
-            Token token = Token(iter->first);
-            token.value = current_analysis;
+            Token token = Token(iter->first, current_analysis);
             return token;
         }
     }
