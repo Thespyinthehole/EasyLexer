@@ -51,6 +51,3 @@ for (iter = tokens.begin(); iter != tokens.end(); iter++)
 ### Compiling the code
 When compiling your code, do what you would normally do when compiling except you will need to add the `EasyLexer.cpp` to the compilier, either through an IDE or by adding the file to the command in the terminal.
 
-
-## Limitations
-This has yet to contain any error infomation and therefore pass all the data it can that is available. This will be added some point in the future
