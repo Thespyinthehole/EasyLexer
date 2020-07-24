@@ -11,27 +11,34 @@ enum Tokens
     token_greater = -6,
     token_left_bracket = -7,
     token_right_bracket = -8,
-    token_variable = -9
+    token_variable = -9,
+    token_new_line = -10
 };
 
 int main()
 {
-    EasyLexer a;
+    EasyLexer lexer;
+    
     //Add the valid tokens to the lexer with the regex that describes them
-    a.add_new_token(Tokens::token_open_scope, "\\{");
-    a.add_new_token(Tokens::token_if, "if");
-    a.add_new_token(Tokens::token_left_bracket, "\\(");
-    a.add_new_token(Tokens::token_right_bracket, "\\)");
-    a.add_new_token(Tokens::token_eof, std::string(1, EOF));
-    a.add_new_token(Tokens::token_close_scope, "\\}");
-    a.add_new_token(Tokens::token_variable, "[a-z]+");
-    a.add_new_token(Tokens::token_greater_than, ">=");
-    a.add_new_token(Tokens::token_greater, ">");
+    lexer.add_new_token(Tokens::token_open_scope, "\\{");
+    lexer.add_new_token(Tokens::token_if, "if");
+    lexer.add_new_token(Tokens::token_left_bracket, "\\(");
+    lexer.add_new_token(Tokens::token_right_bracket, "\\)");
+    lexer.add_new_token(Tokens::token_eof, std::string(1, EOF));
+    lexer.add_new_token(Tokens::token_close_scope, "\\}");
+    lexer.add_new_token(Tokens::token_variable, "[a-z]+");
+    lexer.add_new_token(Tokens::token_greater_than, ">=");
+    lexer.add_new_token(Tokens::token_greater, ">");
+    lexer.add_new_token(Tokens::token_new_line, "\n");
 
     //Write the string we want to extract tokens from
-    std::list<Token> tokens = a.parse("if(hello>=world){}");
+    std::list<Token> tokens = lexer.parse("--\nif--(hello>=world){}");
 
     std::list<Token>::iterator iter;
     for (iter = tokens.begin(); iter != tokens.end(); iter++)
-        printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
+        if (lexer.successful)
+            printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
+        else
+
+            printf("Error on line %d at character %d, unknown characters: %s\n", iter->line_number, iter->start_character, iter->value.c_str());
 }
