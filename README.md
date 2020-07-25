@@ -13,7 +13,7 @@ You are now ready to set up your lexer, which can be create by doing `EasyLexer 
 ### Defining valid token
 A token requires 2 parts in order to be created, an integer(which is both it's ID and priority) and a regex string that defines the token.
 
-The most readable way of defining the IDs for the tokens is to use an enum. For example
+The most readable way of defining the IDs for the tokens is to use an enum. For example:
 
 ```c
 enum Tokens {
@@ -40,7 +40,7 @@ Now that the tokens have been defined, we now need to give the lexer a string to
 
 `lexer.parse(" { {");`
 
-This will extract the tokens from the string given and return a list of tokens. This can then be iterated over similar to the example below
+This will extract the tokens from the string given and return a list of tokens. This can then be iterated over similar to the example below.
 
 ```c
 std::list<Token>::iterator iter;
