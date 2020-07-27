@@ -32,7 +32,7 @@ int main()
     lexer.add_new_token(Tokens::token_new_line, "\n");
 
     //Write the string we want to extract tokens from
-    std::vector<Token> tokens = lexer.parse("--\nif--(hello>=world){}");
+    std::vector<Token> tokens = lexer.parse("if(hello>=world){}");
 
     for (int i = 0; i < tokens.size(); i++)
         if (lexer.successful)

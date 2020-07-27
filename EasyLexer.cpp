@@ -124,7 +124,7 @@ Token EasyLexer::next_token()
         std::string current_analysis = string_to_analysis.substr(current_char_location, offset);
 
         //Loop over the rest of the characters
-        while (current_char_location + offset < string_to_analysis.size())
+        while (current_char_location + offset <= string_to_analysis.size())
         {
             //If we have a match already, keep searching until it doesnt match
             if (found)
