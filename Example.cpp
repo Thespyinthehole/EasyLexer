@@ -18,7 +18,7 @@ enum Tokens
 int main()
 {
     EasyLexer lexer;
-    
+
     //Add the valid tokens to the lexer with the regex that describes them
     lexer.add_new_token(Tokens::token_open_scope, "\\{");
     lexer.add_new_token(Tokens::token_if, "if");
@@ -34,11 +34,10 @@ int main()
     //Write the string we want to extract tokens from
     std::vector<Token> tokens = lexer.parse("--\nif--(hello>=world){}");
 
-    std::vector<Token>::iterator iter;
-    for (iter = tokens.begin(); iter != tokens.end(); iter++)
+    for (int i = 0; i < tokens.size(); i++)
         if (lexer.successful)
-            printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
+            printf("\nToken: %s, Type: %d", tokens[i].value.c_str(), tokens[i].token);
         else
 
-            printf("Error on line %d at character %d, unknown characters: %s\n", iter->line_number, iter->start_character, iter->value.c_str());
+            printf("Error on line %d at character %d, unknown characters: %s\n", tokens[i].line_number, tokens[i].start_character, tokens[i].value.c_str());
 }
