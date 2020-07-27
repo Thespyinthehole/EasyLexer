@@ -67,16 +67,19 @@ std::list<Token> EasyLexer::parse(std::string read_string)
 
     std::list<Token> tokens;
 
+    //Read token until end of file
     Token token;
     while ((token = next_token()).hasNext)
         tokens.push_back(token);
 
+    //Return if there are errors
     if (errors.size() > 0)
     {
         successful = false;
         return errors;
     }
 
+    //Return successful tokens
     successful = true;
     tokens.push_back(Token(end_of_field_token, line_number, char_position));
     return tokens;
