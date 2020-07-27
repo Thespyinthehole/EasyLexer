@@ -38,14 +38,13 @@ By using the `add_token` method, we have signed up our 2 valid tokens to the lex
 
 Now that the tokens have been defined, we now need to give the lexer a string to extract tokens from. 
 
-`lexer.parse(" { {");`
+`std::vector<Token> tokens = lexer.parse(" { {");`
 
 This will extract the tokens from the string given and return a list of tokens. This can then be iterated over similar to the example below.
 
 ```c
-std::list<Token>::iterator iter;
-for (iter = tokens.begin(); iter != tokens.end(); iter++)
-  printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
+for (int i = 0; i < tokens.size(); i++)
+   printf("\nToken: %s, Type: %d", tokens[i].value.c_str(), tokens[i].token);    
 ```
 
 ### Error detection
