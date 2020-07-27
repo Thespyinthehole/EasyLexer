@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <regex>
-#include <list>
 
 //Stores the token data
 class Token
@@ -58,7 +57,7 @@ private:
     std::string error_characters;
 
     //Stores a list of strings that were not able to be parsed
-    std::list<Token> errors;
+    std::vector<Token> errors;
 
     //Stores the current char position
     int error_char_position;
@@ -83,6 +82,6 @@ public:
     void add_new_token(int token, std::string regex);
 
     //Set up a new string to be processed. read_string - the string to be processed, return - the list of tokens generated from the string
-    std::list<Token> parse(std::string read_string);
+    std::vector<Token> parse(std::string read_string);
 };
 #endif

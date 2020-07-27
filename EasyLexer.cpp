@@ -57,7 +57,7 @@ void EasyLexer::add_new_token(int token, std::string regex)
     tokens.insert(std::pair<int, std::regex>(token, std::regex(regex)));
 }
 
-std::list<Token> EasyLexer::parse(std::string read_string)
+std::vector<Token> EasyLexer::parse(std::string read_string)
 {
     //Reset the line and char values
     line_number = 1;
@@ -74,7 +74,7 @@ std::list<Token> EasyLexer::parse(std::string read_string)
     //Clear the errors
     errors.clear();
 
-    std::list<Token> tokens;
+    std::vector<Token> tokens;
 
     //Read token until end of file
     Token token;
