@@ -10,10 +10,13 @@ Token::Token(int _token, int line, int char_start)
 {
     //This token still has stuff to process
     hasNext = true;
+
     //Set the token type for this token
     token = _token;
+
     //Set the line number
     line_number = line;
+
     //Set the char position
     start_character = char_start;
 }
@@ -22,12 +25,16 @@ Token::Token(int _token, int line, int char_start, std::string value)
 {
     //This token still has stuff to process
     hasNext = true;
+
     //Set the token type for this token
     token = _token;
+
     //Set the value
     this->value = value;
+
     //Set the line number
     line_number = line;
+
     //Set the char position
     start_character = char_start;
 }
@@ -36,8 +43,10 @@ Token::Token(int line, int char_start, std::string value)
 {
     //Set the value
     this->value = value;
+
     //Set the line number
     line_number = line;
+
     //Set the char position
     start_character = char_start;
 }
@@ -97,14 +106,17 @@ Token EasyLexer::next_token()
 
     //Get the iterator for the map of valid tokens
     std::map<int, std::regex>::iterator iter;
+
     //Loop over each valid token
     for (iter = tokens.begin(); iter != tokens.end(); iter++)
     {
         //How many characters should we read
         int offset = 1;
+
         //Has this token matched any characters yet
         bool found = false;
-        //Store current line and
+
+        //Store current line and character position
         int current_line = line_number;
         int current_char = char_position;
 
