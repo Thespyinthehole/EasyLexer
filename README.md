@@ -13,7 +13,7 @@ You are now ready to set up your lexer, which can be create by doing `EasyLexer 
 ### Defining valid token
 A token requires 2 parts in order to be created, an integer(which is both it's ID and priority) and a regex string that defines the token.
 
-The most readable way of defining the IDs for the tokens is to use an enum. For example
+The most readable way of defining the IDs for the tokens is to use an enum. For example:
 
 ```c
 enum Tokens {
@@ -40,13 +40,17 @@ Now that the tokens have been defined, we now need to give the lexer a string to
 
 `lexer.parse(" { {");`
 
-This will extract the tokens from the string given and return a list of tokens. This can then be iterated over similar to the example below
+This will extract the tokens from the string given and return a list of tokens. This can then be iterated over similar to the example below.
 
 ```c
 std::list<Token>::iterator iter;
 for (iter = tokens.begin(); iter != tokens.end(); iter++)
   printf("\nToken: %s, Type: %d", iter->value.c_str(), iter->token);
 ```
+
+### Error detection
+
+After you have run `lexer.parse`, you will be given back a list of tokens, however this list will either be the list of errors or the complete list of tokens. The contents can be defined by checking the field `lexer.successful` being true, in which case the list will be the valid tokens extracted from the input string. Otherwise, it will contain the errors. In both cases, the tokens you recieve will contain a line number and a character position along that line which determines where the start of that token is in the input string.
 
 ### Compiling the code
 When compiling your code, do what you would normally do when compiling except you will need to add the `EasyLexer.cpp` to the compilier, either through an IDE or by adding the file to the command in the terminal.
