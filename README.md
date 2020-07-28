@@ -6,6 +6,8 @@ I wrote this as I have started looking into using LLVM, but their tutorial shows
 Therefore I have made a lexer for most cases.
 
 ## How To Use
+This will use [Example.cpp](https://github.com/Thespyinthehole/EasyLexer/blob/master/Example.cpp) to show how to use this library. 
+
 Place both `EasyLexer.cpp` and `EasyLexer.h` in your project directory. In your project file add `#include "EasyLexer.h"`.
 
 You are now ready to set up your lexer, which can be create by doing `EasyLexer [variable name]`.
