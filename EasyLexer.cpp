@@ -57,6 +57,27 @@ void EasyLexer::add_new_token(int token, std::string regex)
     tokens.insert(std::pair<int, std::regex>(token, std::regex(regex)));
 }
 
+LexicalException::LexicalException(std::vector<Token> errors)
+{
+    lexical_errors = errors;
+}
+
+const char *LexicalException::what()
+{
+    error_message = "";
+    for (int i = 0; i < lexical_errors.size(); i++)
+    {
+        error_message += "Error on line ";
+        error_message += std::to_string(lexical_errors[i].line_number);
+        error_message += " at character ";
+        error_message += std::to_string(lexical_errors[i].start_character);
+        error_message += " unknown characters: ";
+        error_message += lexical_errors[i].value.c_str();
+        error_message += "\n";
+    }
+    return error_message.c_str();
+}
+
 std::vector<Token> EasyLexer::parse(std::string read_string)
 {
     //Reset the line and char values
@@ -83,13 +104,9 @@ std::vector<Token> EasyLexer::parse(std::string read_string)
 
     //Return if there are errors
     if (errors.size() > 0)
-    {
-        successful = false;
-        return errors;
-    }
+        throw LexicalException(errors);
 
     //Return successful tokens
-    successful = true;
     tokens.push_back(Token(end_of_field_token, line_number, char_position));
     return tokens;
 }

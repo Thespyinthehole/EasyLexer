@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <regex>
+#include <exception>
 
 //Stores the token data
 class Token
@@ -35,6 +36,22 @@ public:
 
     //Constructor in which the token is set. line - which line this token starts on, char_start - the character count which this token start at
     Token(int line, int char_start, std::string value);
+};
+
+class LexicalException : public std::exception
+{
+private:
+    std::string error_message;
+
+public:
+    //Gives the error in string form
+    const char *what();
+
+    //Contains all the errors that the lexer has found
+    std::vector<Token> lexical_errors;
+
+    //Make this lexical exception with the errors the lexer has found
+    LexicalException(std::vector<Token> errors);
 };
 
 //Stores the valid tokens and extracts tokens from a given string
@@ -72,9 +89,6 @@ private:
     int line_number;
 
 public:
-    //Stores if the lexer was successful when parsing
-    bool successful;
-
     //What token defines the last token - this will be added at the end
     int end_of_field_token = 0;
 

@@ -32,12 +32,14 @@ int main()
     lexer.add_new_token(Tokens::token_new_line, "\n");
 
     //Write the string we want to extract tokens from
-    std::vector<Token> tokens = lexer.parse("if(hello>=world){}");
-
-    for (int i = 0; i < tokens.size(); i++)
-        if (lexer.successful)
+    try
+    {
+        std::vector<Token> tokens = lexer.parse("-if(hello>=world){}");
+        for (int i = 0; i < tokens.size(); i++)
             printf("\nToken: %s, Type: %d", tokens[i].value.c_str(), tokens[i].token);
-        else
-
-            printf("Error on line %d at character %d, unknown characters: %s\n", tokens[i].line_number, tokens[i].start_character, tokens[i].value.c_str());
+    }
+    catch (LexicalException e)
+    {
+        printf("%s", e.what());
+    }
 }
