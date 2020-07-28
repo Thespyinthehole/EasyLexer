@@ -6,7 +6,7 @@ Token::Token()
     hasNext = false;
 }
 
-Token::Token(int _token, int line, int char_start)
+Token::Token(Tokens _token, int line, int char_start)
 {
     //This token still has stuff to process
     hasNext = true;
@@ -21,7 +21,7 @@ Token::Token(int _token, int line, int char_start)
     start_character = char_start;
 }
 
-Token::Token(int _token, int line, int char_start, std::string value)
+Token::Token(Tokens _token, int line, int char_start, std::string value)
 {
     //This token still has stuff to process
     hasNext = true;
@@ -51,10 +51,10 @@ Token::Token(int line, int char_start, std::string value)
     start_character = char_start;
 }
 
-void EasyLexer::add_new_token(int token, std::string regex)
+void EasyLexer::add_new_token(Tokens token, std::string regex)
 {
     //Add a new valid token to the map, turning the regex string into a regex object
-    tokens.insert(std::pair<int, std::regex>(token, std::regex(regex)));
+    tokens.insert(std::pair<Tokens, std::regex>(token, std::regex(regex)));
 }
 
 LexicalException::LexicalException(std::vector<Token> errors)
@@ -122,7 +122,7 @@ Token EasyLexer::next_token()
         return Token();
 
     //Get the iterator for the map of valid tokens
-    std::map<int, std::regex>::iterator iter;
+    std::map<Tokens, std::regex>::iterator iter;
 
     //Loop over each valid token
     for (iter = tokens.begin(); iter != tokens.end(); iter++)

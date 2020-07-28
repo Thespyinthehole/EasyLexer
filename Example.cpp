@@ -20,16 +20,16 @@ int main()
     EasyLexer lexer;
 
     //Add the valid tokens to the lexer with the regex that describes them
-    lexer.add_new_token(Tokens::token_open_scope, "\\{");
-    lexer.add_new_token(Tokens::token_if, "if");
-    lexer.add_new_token(Tokens::token_left_bracket, "\\(");
-    lexer.add_new_token(Tokens::token_right_bracket, "\\)");
-    lexer.add_new_token(Tokens::token_eof, std::string(1, EOF));
-    lexer.add_new_token(Tokens::token_close_scope, "\\}");
-    lexer.add_new_token(Tokens::token_variable, "[a-z]+");
-    lexer.add_new_token(Tokens::token_greater_than, ">=");
-    lexer.add_new_token(Tokens::token_greater, ">");
-    lexer.add_new_token(Tokens::token_new_line, "\n");
+    lexer.add_new_token(token_open_scope, "\\{");
+    lexer.add_new_token(token_if, "if");
+    lexer.add_new_token(token_left_bracket, "\\(");
+    lexer.add_new_token(token_right_bracket, "\\)");
+    lexer.add_new_token(token_eof, std::string(1, EOF));
+    lexer.add_new_token(token_close_scope, "\\}");
+    lexer.add_new_token(token_variable, "[a-z]+");
+    lexer.add_new_token(token_greater_than, ">=");
+    lexer.add_new_token(token_greater, ">");
+    lexer.add_new_token(token_new_line, "\n");
 
     //Write the string we want to extract tokens from
     try

@@ -6,12 +6,14 @@
 #include <regex>
 #include <exception>
 
+enum Tokens : int;
+
 //Stores the token data
 class Token
 {
 public:
     //What type of token this is
-    int token;
+    Tokens token;
 
     //The full string value this token is
     std::string value;
@@ -29,10 +31,10 @@ public:
     Token();
 
     //Constructor in which the token is set. _token - the token type of this token, line - which line this token starts on, char_start - the character count which this token start at
-    Token(int _token, int line, int char_start);
+    Token(Tokens _token, int line, int char_start);
 
     //Constructor in which the token is set. _token - the token type of this token, line - which line this token starts on, char_start - the character count which this token start at
-    Token(int _token, int line, int char_start, std::string value);
+    Token(Tokens _token, int line, int char_start, std::string value);
 
     //Constructor in which the token is set. line - which line this token starts on, char_start - the character count which this token start at
     Token(int line, int char_start, std::string value);
@@ -59,7 +61,7 @@ class EasyLexer
 {
 private:
     //The set of valid tokens
-    std::map<int, std::regex, std::greater<int>> tokens;
+    std::map<Tokens, std::regex, std::greater<Tokens>> tokens;
 
     //The current string that is being processed
     std::string string_to_analysis;
@@ -90,10 +92,10 @@ private:
 
 public:
     //What token defines the last token - this will be added at the end
-    int end_of_field_token = 0;
+    Tokens end_of_field_token;
 
     //Add a new valid token to the set of valid tokens. token- the token type, regex - the regex that defines the token
-    void add_new_token(int token, std::string regex);
+    void add_new_token(Tokens token, std::string regex);
 
     //Set up a new string to be processed. read_string - the string to be processed, return - the list of tokens generated from the string
     std::vector<Token> parse(std::string read_string);
