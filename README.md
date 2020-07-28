@@ -15,7 +15,7 @@ You are now ready to set up your lexer, which can be create by doing `EasyLexer 
 ### Defining valid token
 A token requires 2 parts in order to be created, an integer(which is both its ID and priority) and a regex string that defines the token.
 
-The most readable way of defining the IDs for the tokens is to use an enum. For example:
+To define a token, you will need to create an enum called `Tokens` and populate it with your tokens. For example:
 
 ```c
 enum Tokens {
