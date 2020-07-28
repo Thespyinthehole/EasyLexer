@@ -33,7 +33,7 @@ lexer.add_token(Tokens::token_space," ");
 lexer.add_token(Tokens::token_new_scope,"\\{");
 ```
 
-By using the `add_token` method, we have signed up our 2 valid tokens to the lexer so now it knows what it is looking for. The `add_token` method requires 2 parameters, the first being an int and the second being the regex string. In the second example listed, `\\` has to be placed before `{` as the `{` is a special character in regex so we have to escape that character, if your project does not work, it is likely you have forgotten to escape the special characters. As this parameter is regex, you are able to enter `[a-z]+` to find all lower case words. One final note: if you do this instead `[a-z]*`, this token will return the full string back as this will fit any string.
+By using the `add_token` method, we have registered our 2 valid tokens to the lexer so now it knows what it is looking for. The `add_token` method requires 2 parameters, the first being an int and the second being the regex string. In the second example listed, `\\` has to be placed before `{` as the `{` is a special character in regex so we have to escape that character, if your project does not work, it is likely you have forgotten to escape the special characters. As this parameter is regex, you are able to enter `[a-z]+` to find all lower case words. One final note: if you do this instead `[a-z]*`, this token will return the full string back as this will fit any string.
 
 
 ### Running the lexer
