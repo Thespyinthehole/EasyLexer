@@ -51,7 +51,7 @@ for (int i = 0; i < tokens.size(); i++)
 
 ### Error detection
 
-After you have run `lexer.parse`, you will be given back a list of tokens, however this list will either be the list of errors or the complete list of tokens. The contents can be defined by checking the field `lexer.successful` being true, in which case the list will be the valid tokens extracted from the input string. Otherwise, it will contain the errors. In both cases, the tokens you receive will contain a line number and a character position along that line which determines where the start of that token is in the input string.
+When running `lexer.parse`, a `LexicalException` can be thrown. If this is thrown that means that there is at least 1 character which did not match a valid token. After putting a try catch block around the `lexer.parse`, you should be able to detect when the errors occur and print them too the user. You can either use `.what()`, which will give a full `char*` explaining the errors, or you can access the tokens in the `errors` property of the exception. These tokens will contain the line number and character number that the token started at. 
 
 ### Compiling the code
 When compiling your code, do what you would normally do when compiling except you will need to add the `EasyLexer.cpp` to the compiler, either through an IDE or by adding the file to the command in the terminal.
