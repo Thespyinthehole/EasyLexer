@@ -1,7 +1,7 @@
 #include "EasyLexer.h"
 
 //Define the valid token types - higher number = higher priority
-enum Tokens
+enum Tokens : int
 {
     token_eof = -1,
     token_open_scope = -2,
@@ -34,7 +34,7 @@ int main()
     //Write the string we want to extract tokens from
     try
     {
-        std::vector<Token> tokens = lexer.parse("-if(hello>=world){}");
+        std::vector<Token> tokens = lexer.parse("if(hello>=world){}");
         for (int i = 0; i < tokens.size(); i++)
             printf("\nToken: %s, Type: %d", tokens[i].value.c_str(), tokens[i].token);
     }

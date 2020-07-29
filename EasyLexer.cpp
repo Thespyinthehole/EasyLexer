@@ -209,6 +209,8 @@ Token EasyLexer::next_token()
     //Add the invalid character to the error string
     error_characters += string_to_analysis.at(current_char_location++);
 
+    if (current_char_location == string_to_analysis.size())
+        errors.push_back(Token(error_line_number, error_char_position, error_characters));
     //Look for other succesful tokens
     return next_token();
 }
