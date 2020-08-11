@@ -99,8 +99,14 @@ std::vector<Token> EasyLexer::parse(std::string read_string)
 
     //Read token until end of file
     Token token;
+
+    //Get ignored tokens
+    std::vector<Tokens>::iterator begin = ignored_tokens.begin();
+    std::vector<Tokens>::iterator end = ignored_tokens.end();
+
     while ((token = next_token()).hasNext)
-        tokens.push_back(token);
+        if (std::find(begin, end, token.token) == end)
+            tokens.push_back(token);
 
     //Return if there are errors
     if (errors.size() > 0)
@@ -178,4 +184,9 @@ Token EasyLexer::next_token()
     if (current_char_location == string_to_analysis.size())
         errors.push_back(Token(error_line_number, error_char_position, error_characters));
     return next_token();
+}
+
+void EasyLexer::add_ignored_token(Tokens token)
+{
+    ignored_tokens.push_back(token);
 }

@@ -90,6 +90,9 @@ private:
     //Stores the current line number
     int line_number;
 
+    //The tokens that should be ignored
+    std::vector<Tokens> ignored_tokens;
+
 public:
     //What token defines the last token - this will be added at the end
     Tokens end_of_field_token;
@@ -99,5 +102,8 @@ public:
 
     //Set up a new string to be processed. read_string - the string to be processed, return - the list of tokens generated from the string
     std::vector<Token> parse(std::string read_string);
+
+    //Add a token to be ignored by the parser
+    void add_ignored_token(Tokens);
 };
 #endif
