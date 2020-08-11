@@ -54,7 +54,7 @@ Token::Token(int line, int char_start, std::string value)
 void EasyLexer::add_new_token(Tokens token, std::string regex)
 {
     //Add a new valid token to the map, turning the regex string into a regex object
-    tokens.insert(std::pair<Tokens, std::regex>(token, std::regex("^" + regex)));
+    tokens.insert(std::pair<Tokens, std::regex>(token, std::regex("^(" + regex + ")")));
 }
 
 LexicalException::LexicalException(std::vector<Token> errors)
