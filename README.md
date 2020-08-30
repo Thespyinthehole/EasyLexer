@@ -29,12 +29,19 @@ The priority mentioned above results in tokens with a higher value will be scann
 Now we have got onto regex, we now are able to use our enum to define a full token in the lexer. In this example, I will be using the enum above and my lexer object will be called `lexer`.
 
 ```c
-lexer.add_token(Tokens::token_space," ");
-lexer.add_token(Tokens::token_new_scope,"\\{");
+lexer.add_token(token_space," ");
+lexer.add_token(token_new_scope,"\\{");
 ```
 
 By using the `add_token` method, we have registered our 2 valid tokens to the lexer so now it knows what it is looking for. The `add_token` method requires 2 parameters, the first being an int and the second being the regex string. In the second example listed, `\\` has to be placed before `{` as the `{` is a special character in regex so we have to escape that character, if your project does not work, it is likely you have forgotten to escape the special characters. As this parameter is regex, you are able to enter `[a-z]+` to find all lower case words. One final note: if you do this instead `[a-z]*`, this token will return the full string back as this will fit any string.
 
+### Ignored Tokens
+
+Ignored tokens are tokens that when extracted will not be added to the list of valid tokens.
+
+```c
+lexer.add_ignored_token(token_space);
+```
 
 ### Running the lexer
 
