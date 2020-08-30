@@ -56,3 +56,6 @@ When running `lexer.parse`, a `LexicalException` can be thrown. If this is throw
 ### Compiling the code
 When compiling your code, do what you would normally do when compiling except you will need to add the `EasyLexer.cpp` to the compiler, either through an IDE or by adding the file to the command in the terminal.
 
+### Limitations
+* If two tokens share the same start, it will choose the higher priority. For example, if we have a token which is "int" and we have another which has "[a-z]+", and we want to extract "integer", we will recieve 2 tokens which will be first "int" and second "[a-z]+" storing "eger".
+
