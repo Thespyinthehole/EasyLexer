@@ -24,7 +24,6 @@ int main()
     lexer.add_new_token(token_if, "if");
     lexer.add_new_token(token_left_bracket, "\\(");
     lexer.add_new_token(token_right_bracket, "\\)");
-    lexer.add_new_token(token_eof, std::string(1, EOF));
     lexer.add_new_token(token_close_scope, "\\}");
     lexer.add_new_token(token_variable, "[a-z]+");
     lexer.add_new_token(token_greater_than, ">=");

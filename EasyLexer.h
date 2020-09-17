@@ -6,6 +6,10 @@
 #include <regex>
 #include <exception>
 
+#ifndef INT_MAX
+#define INT_MAX 2147483647
+#endif
+
 enum Tokens : int;
 
 //Stores the token data
@@ -56,42 +60,49 @@ public:
     LexicalException(std::vector<Token> errors);
 };
 
+struct LexerToken
+{
+    Tokens type;
+    std::regex rgx;
+    bool ignore;
+};
+
+struct LexerExtraction 
+{
+    int offset;
+    std::string match;
+    std::string prefix;
+    std::string suffix;
+};
+
+struct LexerData
+{
+    //  std::string to_lex;
+    int line_num;
+    int char_num;
+    int full_char;
+};
+
+const bool operator<(const LexerToken, const LexerToken);
+const bool operator>(const LexerToken, const LexerToken);
+
 //Stores the valid tokens and extracts tokens from a given string
 class EasyLexer
 {
 private:
     //The set of valid tokens
-    std::map<Tokens, std::regex, std::greater<Tokens>> tokens;
+    std::vector<LexerToken> tokens;
 
-    //The current string that is being processed
-    std::string string_to_analysis;
+    //Extract the next token from the current string
+    std::pair<Token, bool> next_token(LexerData &, std::map<LexerToken, LexerExtraction, std::greater<LexerToken>> &);
 
-    //How far along the string have we processed up to
-    int current_char_location;
-
-    //Extract the next token from the current string. return - the token which has just been extracted, check has next to see if it is a valid token
-    Token next_token();
-
-    //Stores the lastest set of characters that caused issues
-    std::string error_characters;
+    void update_char_pointer(LexerData &, std::string);
 
     //Stores a list of strings that were not able to be parsed
     std::vector<Token> errors;
 
-    //Stores the current char position
-    int error_char_position;
-
-    //Stores the current line number
-    int error_line_number;
-
-    //Stores the current char position
-    int char_position;
-
-    //Stores the current line number
-    int line_number;
-
-    //The tokens that should be ignored
-    std::vector<Tokens> ignored_tokens;
+    //Stores a combination of all the regex
+    // std::string combined_regex;
 
 public:
     //What token defines the last token - this will be added at the end
@@ -100,10 +111,10 @@ public:
     //Add a new valid token to the set of valid tokens. token- the token type, regex - the regex that defines the token
     void add_new_token(Tokens token, std::string regex);
 
+    //Add a new valid token to the set of valid tokens. token- the token type, regex - the regex that defines the token, ignore - should the token be ignored by the lexer
+    void add_new_token(Tokens token, std::string regex, bool ignore);
+
     //Set up a new string to be processed. read_string - the string to be processed, return - the list of tokens generated from the string
     std::vector<Token> parse(std::string read_string);
-
-    //Add a token to be ignored by the parser
-    void add_ignored_token(Tokens);
 };
 #endif

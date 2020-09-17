@@ -51,12 +51,6 @@ Token::Token(int line, int char_start, std::string value)
     start_character = char_start;
 }
 
-void EasyLexer::add_new_token(Tokens token, std::string regex)
-{
-    //Add a new valid token to the map, turning the regex string into a regex object
-    tokens.insert(std::pair<Tokens, std::regex>(token, std::regex("^(" + regex + ")")));
-}
-
 LexicalException::LexicalException(std::vector<Token> errors)
 {
     lexical_errors = errors;
@@ -78,115 +72,127 @@ const char *LexicalException::what()
     return error_message.c_str();
 }
 
+void EasyLexer::add_new_token(Tokens token, std::string regex)
+{
+    add_new_token(token, regex, false);
+}
+
+void EasyLexer::add_new_token(Tokens token, std::string regex, bool ignore)
+{
+    tokens.push_back({token, std::regex(regex), ignore});
+}
+
+const bool operator<(const LexerToken a, const LexerToken b)
+{
+    return a.type < b.type;
+}
+
+const bool operator>(const LexerToken a, const LexerToken b)
+{
+    return a.type > b.type;
+}
+
 std::vector<Token> EasyLexer::parse(std::string read_string)
 {
-    //Reset the line and char values
-    line_number = 1;
-    char_position = 1;
-    error_line_number = 1;
-    error_char_position = 1;
-
-    //Set the new string
-    string_to_analysis = read_string;
-
-    //Reset the offset
-    current_char_location = 0;
-
     //Clear the errors
     errors.clear();
 
+    //Set up the needed references
     std::vector<Token> tokens;
+    std::pair<Token, bool> extracted;
+    LexerData data = {1, 1, 0};
+    std::map<LexerToken, LexerExtraction, std::greater<LexerToken>> matches;
 
-    //Read token until end of file
-    Token token;
+    for (LexerToken token : this->tokens)
+    {
+        std::smatch match;
+        LexerExtraction extracted = {0, "", "", ""};
+        if (std::regex_search(read_string, match, token.rgx))
+            extracted = {0, match[0].str(), match.prefix(), match.suffix()};
+        matches.insert({token, extracted});
+    }
+    //Extract the tokens
+    while ((extracted = next_token(data, matches)).first.hasNext)
+        if (!extracted.second)
+            tokens.push_back(extracted.first);
 
-    //Get ignored tokens
-    std::vector<Tokens>::iterator begin = ignored_tokens.begin();
-    std::vector<Tokens>::iterator end = ignored_tokens.end();
-
-    while ((token = next_token()).hasNext)
-        if (std::find(begin, end, token.token) == end)
-            tokens.push_back(token);
+    if(read_string.substr(data.full_char) != "")
+        errors.push_back(Token(data.line_num, data.char_num, read_string.substr(data.full_char)));
 
     //Return if there are errors
     if (errors.size() > 0)
         throw LexicalException(errors);
 
     //Return successful tokens
-    tokens.push_back(Token(end_of_field_token, line_number, char_position));
+    tokens.push_back(Token(end_of_field_token, data.line_num, data.char_num));
     return tokens;
 }
 
-Token EasyLexer::next_token()
+//Updates the data line and char num as well as total chars read
+void EasyLexer::update_char_pointer(LexerData &data, std::string str)
 {
-    //If there is a blank string do not process
-    if (string_to_analysis.empty())
-        return Token();
-
-    //If we have reached the end do not process
-    if (current_char_location >= string_to_analysis.size())
-        return Token();
-
-    //Get the iterator for the map of valid tokens
-    std::map<Tokens, std::regex>::iterator iter;
-
-    std::string current_analysis = string_to_analysis.substr(current_char_location);
-    std::smatch regex_match;
-
-    //Loop over each valid token
-    for (iter = tokens.begin(); iter != tokens.end(); iter++)
+    for (char chr : str)
     {
-        //Check if we match
-        if (std::regex_search(current_analysis, regex_match, iter->second))
-            break;
-    }
-
-    if (regex_match.size() != 0)
-    {
-        if (error_characters.size() > 0)
-            errors.push_back(Token(error_line_number, error_char_position, error_characters));
-
-        //Reset the error string
-        error_characters = "";
-
-        //Get the matched string and return a token linking to it
-        std::string matched_string = regex_match[0].str();
-        current_char_location += matched_string.size();
-        Token token(iter->first, line_number, char_position, matched_string);
-
-        //Move the line and char position along
-        for (char chr : matched_string) {
-            if (chr == '\n')
-            {
-                line_number++;
-                char_position = 1;
-            }
-            else
-                char_position++;
+        if (chr == '\n')
+        {
+            data.line_num++;
+            data.char_num = 1;
         }
-        error_char_position = char_position;
-        error_line_number = line_number;
-        return token;
+        else
+            data.char_num++;
     }
-
-
-    if (string_to_analysis.at(current_char_location) == '\n')
-    {
-        line_number++;
-        char_position = 1;
-    }
-    else
-        char_position++;
-
-    //Didnt find a match so add an invalid character and try from next character
-    error_characters += string_to_analysis.at(current_char_location++);
-
-    if (current_char_location == string_to_analysis.size())
-        errors.push_back(Token(error_line_number, error_char_position, error_characters));
-    return next_token();
+    data.full_char += str.length();
 }
 
-void EasyLexer::add_ignored_token(Tokens token)
+std::pair<Token, bool> EasyLexer::next_token(LexerData &data, std::map<LexerToken, LexerExtraction, std::greater<LexerToken>> &matches)
 {
-    ignored_tokens.push_back(token);
+    int first_char = INT_MAX;
+    std::pair<LexerToken, LexerExtraction> match = {{}, {0, "", "", ""}};
+
+    for (std::pair<LexerToken, LexerExtraction> current_match : matches)
+    {
+        if (current_match.second.match.length() == 0)
+            continue;
+        int pos = current_match.second.offset + current_match.second.prefix.length();
+        if (pos < first_char)
+        {
+            first_char = pos;
+            match = current_match;
+        }
+        else if (pos == first_char && current_match.second.match.size() > match.second.match.size())
+            match = current_match;
+    }
+
+    if (match.second.match.size() == 0)
+        return {Token(), false};
+
+    int error_length = match.second.prefix.length();
+    int offset_pos = data.full_char - match.second.offset;
+
+    if (error_length > offset_pos)
+    {
+        std::string error = match.second.prefix.substr(offset_pos);
+        errors.push_back(Token(data.line_num, data.char_num, error));
+        update_char_pointer(data, error);
+    }
+
+    Token output(match.first.type, data.line_num, data.char_num, match.second.match);
+    update_char_pointer(data, match.second.match);
+
+    std::string next = match.second.suffix;
+    int end = match.second.offset + match.second.prefix.length() + match.second.match.length();
+    for (std::pair<LexerToken, LexerExtraction> current_match : matches)
+    {
+        if (current_match.second.match == "")
+            continue;
+        int current_pos = current_match.second.offset + current_match.second.prefix.length();
+        if (current_pos >= end)
+            continue;
+        std::smatch new_match;
+        LexerExtraction extracted = {end, "", "", ""};
+        if (std::regex_search(next, new_match, current_match.first.rgx))
+            extracted = {end, new_match[0], new_match.prefix(), new_match.suffix()};
+        matches[current_match.first] = extracted;
+    }
+    return {output, match.first.ignore};
 }
