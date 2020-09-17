@@ -24,17 +24,26 @@ enum Tokens {
 };
 ```
 
+The lexer will look for the longest regex result first and then use the priority listed.
+
 The priority mentioned above results in tokens with a higher value will be scanned for first. In the example above, `token_space` will be looked for before `token_new_scope`. In this example priority does not matter. However, when you define the regex strings which are able to overlap with each other then priority needs to be taken into account. An example of this is the regex for `>` and the regex for `>=`, in which the `>=` needs to have a higher priority than `>` as the `>` appears in `>=`.
 
 Now we have got onto regex, we now are able to use our enum to define a full token in the lexer. In this example, I will be using the enum above and my lexer object will be called `lexer`.
 
 ```c
-lexer.add_token(Tokens::token_space," ");
-lexer.add_token(Tokens::token_new_scope,"\\{");
+lexer.add_token(token_space," ");
+lexer.add_token(token_new_scope,"\\{");
 ```
 
 By using the `add_token` method, we have registered our 2 valid tokens to the lexer so now it knows what it is looking for. The `add_token` method requires 2 parameters, the first being an int and the second being the regex string. In the second example listed, `\\` has to be placed before `{` as the `{` is a special character in regex so we have to escape that character, if your project does not work, it is likely you have forgotten to escape the special characters. As this parameter is regex, you are able to enter `[a-z]+` to find all lower case words. One final note: if you do this instead `[a-z]*`, this token will return the full string back as this will fit any string.
 
+### Ignored Tokens
+
+Ignored tokens are tokens that when extracted will not be added to the list of valid tokens. These can be added by included a boolean parameter when you add the token
+
+```c
+lexer.add_token(token_space," ",true);
+```
 
 ### Running the lexer
 
@@ -55,4 +64,7 @@ When running `lexer.parse`, a `LexicalException` can be thrown. If this is throw
 
 ### Compiling the code
 When compiling your code, do what you would normally do when compiling except you will need to add the `EasyLexer.cpp` to the compiler, either through an IDE or by adding the file to the command in the terminal.
+
+### Limitations
+* If two tokens share the same start, it will choose the higher priority. For example, if we have a token which is "int" and we have another which has "[a-z]+", and we want to extract "integer", we will recieve 2 tokens which will be first "int" and second "[a-z]+" storing "eger".
 
